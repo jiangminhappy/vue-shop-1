@@ -89,7 +89,7 @@ const _axios = axios.create(config);
 
    
 
-5. vuex的使用
+5. ##### vuex的使用
 
    vuex状态管理，是该项目数据管理的仓库；
 
@@ -103,7 +103,13 @@ const _axios = axios.create(config);
 
    + getters
 
-     该文件主要用于对state里面的数据进行进一步的处理
+     该文件主要用于对state里面的数据进行进一步的处理；
+
+     mapGetters:对数据的处理的引入，相当于计算属性；
+
+     ![image-20210301204618621](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210301204618621.png)
+
+     ![image-20210301204658365](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210301204658365.png)
 
    + mutations
 
@@ -111,13 +117,60 @@ const _axios = axios.create(config);
 
      通过**store.commit** ()的触发方式来触发相应的事件；
 
+     mapMutations: 相当于一个方法，当存在多个mutation需要引入的时候使用该方法
+
+     ![image-20210301204214145](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210301204214145.png)
+
    + Action
 
      类似于mutation，不同在于Action提交的是mutation，而不是直接更改状态、Action可以包含任意异步操作
 
-   
+   （具体请参考Vuex的官方文档）
 
-   
+6. ##### 首页中可滚动区域的问题
 
-6. 
+   + Better-Scroll在决定有多少区域可以滚动时, 是根据scrollerHeight属性决定
+     + scrollerHeight属性是根据放Better-Scroll的content中的子组件的高度
+     + 但是我们的首页中, 刚开始在计算scrollerHeight属性时, 是没有将图片计算在内的
+     + 所以, 计算出来的告诉是错误的(1300+)
+     + 后来图片加载进来之后有了新的高度, 但是scrollerHeight属性并没有进行更新.
+     + 所以滚动出现了问题
+   + 如何解决这个问题了?
+     * 监听每一张图片是否加载完成, 只要有一张图片加载完成了, 执行一次refresh()
+     * 如何监听图片加载完成了?
+       * 原生的js监听图片: img.onload = function() {}
+       * Vue中监听: @load='方法'
+     * 调用scroll的refresh()
+
+   + 如何将GoodsListItem.vue中的事件传入到Home.vue中
+     + 因为涉及到非父子组件的通信, 所以这里我们选择了**事件总线**
+       * bus ->总线
+       * Vue.prototype.$bus = new Vue()
+       * this.bus.emit('事件名称', 参数)
+       * this.bus.on('事件名称', 回调函数(参数))
+
+   + 对于refresh非常频繁的问题, 进行防抖操作
+
+     * 防抖debounce/节流throttle(课下研究一下)
+     * 防抖函数起作用的过程:
+       * 如果我们直接执行refresh, 那么refresh函数会被执行30次.
+       * 可以将refresh函数传入到debounce函数中, 生成一个新的函数.
+       * 之后在调用非常频繁的时候, 就使用新生成的函数.
+       * 而新生成的函数, 并不会非常频繁的调用, 如果下一次执行来的非常快, 那么会将上一次取消掉
+
+     ```javascript
+     debounce(func, delay) {
+             let timer = null
+             return function (...args) {
+               if (timer) clearTimeout(timer)
+               timer = setTimeout(() => {
+                 func.apply(this, args)
+               }, delay)
+             }
+           },
+     ```
+
+     
+
+7. 
 
