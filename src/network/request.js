@@ -3,13 +3,14 @@ import { Toast } from "vant";
 import Loading from "../store/index";
 
 // 本接口为测试接口,真实接口请联系coderwhy001
-const url = "xxx";
+const url = "http://152.136.185.210:8000/api/w6";
 
 let config = {
   baseURL: url,
   timeout: 10000
 };
 
+// 创建axios的实例
 const _axios = axios.create(config);
 
 // 请求拦截

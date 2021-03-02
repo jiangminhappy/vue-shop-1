@@ -17,7 +17,7 @@ Vue.use(VueRouter);
 
 // 正常路由加载,会将所有路由的js跟css合并到一个文件
 import Home from "../views/home/Home";
-import Category from "../views/category/Category";
+import Category from "../views/category/CateGory";
 import Cart from "../views/cart/Cart";
 import Profile from "../views/profile/Profile";
 import ProductDetail from "../views/detail/ProductDetail";
